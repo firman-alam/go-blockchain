@@ -1,17 +1,10 @@
 package core
 
-import "io"
+import "github.com/firman-alam/go-blockchain/crypto"
 
 type Transaction struct {
 	Data []byte
 
-	
-}
-
-func (tx *Transaction) EncodeBinary(w io.Writer) error {
-	return nil
-}
-
-func (tx *Transaction) DecodeBinary(r io.Reader) error {
-	return nil
+	PublicKey	crypto.PublicKey
+	Signature 	*crypto.Signature
 }
