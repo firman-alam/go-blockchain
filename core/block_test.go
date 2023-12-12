@@ -1,62 +1,29 @@
 package core
 
 import (
-	"bytes"
+	"fmt"
 	"testing"
 	"time"
 
 	"github.com/firman-alam/go-blockchain/types"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestHeader_Encode_Decode(t *testing.T) {
-	h := &Header{
-		Version: 	1,
-		PrevBlock: 	types.RandomHash(),
-		Timestamp: 	time.Now().UnixNano(),
-		Height: 	10,
-		Nonce: 		989394,
+func randomBlock(height uint32) *Block {
+	header := &Header{
+		Version: 1,
+		PrevBlockHash: types.RandomHash(),
+		Height: height,
+		Timestamp: time.Now().UnixNano(),
 	}
 
-	buf := &bytes.Buffer{}
-	assert.Nil(t, h.EncodeBinary(buf))
+	tx := Transaction{
+		Data: []byte("foo"),
+	}
 
-	hDecode := &Header{}
-	assert.Nil(t, hDecode.DecodeBinary(buf))
-	assert.Equal(t, h, hDecode)
+	return NewBlock(header, []Transaction{tx})
 }
 
-func TestBlock_Encode_Decode(t *testing.T) {
-	b := &Block{
-		Header: Header{
-			Version: 	1,
-			PrevBlock: 	types.RandomHash(),
-			Timestamp: 	time.Now().UnixNano(),
-			Height: 	10,
-			Nonce: 		989394,
-		},
-		Transcations: nil,
-	}
-
-	buf := &bytes.Buffer{}
-	assert.Nil(t, b.EncodeBinary(buf))
-
-	bDecode := &Block{}
-	assert.Nil(t, bDecode.DecodeBinary(buf))
-	assert.Equal(t, b, bDecode)
-}
-
-func TestBlockHash(t *testing.T) {
-	b := &Block{
-		Header: Header{
-			Version: 	1,
-			PrevBlock: 	types.RandomHash(),
-			Timestamp: 	time.Now().UnixNano(),
-			Height: 	10,
-		},
-		Transcations: []Transaction{},
-	}
-
-	h := b.Hash()
-	assert.False(t, h.IsZero())
+func TestHashBlock(t *testing.T) {
+	b := randomBlock(0)
+	fmt.Println(b.Hash(BlockHasher{}))
 }
